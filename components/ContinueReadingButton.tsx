@@ -23,7 +23,7 @@ export function ContinueReadingButton({ seriesSlug }: ContinueReadingButtonProps
   return (
     <Link
       href={`/series/${seriesSlug}/${progress.bookSlug}/chapter/${progress.chapterSlug}`}
-      className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#8eb7ff]/35 bg-[#8eb7ff]/10 px-5 font-semibold text-[#c9dcff] transition hover:bg-[#8eb7ff]/16"
+      className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-orange-200 bg-white px-5 font-black text-[#df3f21] shadow-sm shadow-orange-950/5 transition hover:border-[#f06a2a] hover:bg-orange-50"
     >
       Continue: Chapter {progress.chapterNumber}
     </Link>
