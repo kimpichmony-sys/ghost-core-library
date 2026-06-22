@@ -1,0 +1,9 @@
+<svg width="800" height="1200" viewBox="0 0 800 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="1200" fill="#0A111C"/>
+  <rect x="56" y="56" width="688" height="1088" rx="32" fill="#101B2A" stroke="#E7C873" stroke-width="4"/>
+  <path d="M400 278L548 720H252L400 278Z" fill="#182943" stroke="#8EB7FF" stroke-width="5"/>
+  <circle cx="400" cy="538" r="104" fill="#0A111C" stroke="#E7C873" stroke-width="5"/>
+  <path d="M326 538H474M400 464V612" stroke="#8EB7FF" stroke-width="8" stroke-linecap="round"/>
+  <text x="400" y="920" fill="#F4DC91" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700" text-anchor="middle">COVER</text>
+  <text x="400" y="986" fill="#C9DCFF" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700" text-anchor="middle">COMING SOON</text>
+</svg>
