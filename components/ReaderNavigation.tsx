@@ -25,7 +25,7 @@ export function ReaderNavigation({
         <ChapterLink target={previous} seriesSlug={seriesSlug} label="Previous" />
         <Link
           href={`/series/${seriesSlug}/${bookSlug}`}
-          className="inline-flex min-h-12 items-center justify-center rounded-xl border border-current/20 px-4 font-semibold transition hover:bg-current/5"
+          className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-current/20 px-4 font-black transition hover:bg-current/5"
         >
           Chapter List
         </Link>
@@ -35,7 +35,7 @@ export function ReaderNavigation({
         <MobileChapterLink target={previous} seriesSlug={seriesSlug} label="Prev" />
         <Link
           href={`/series/${seriesSlug}/${bookSlug}`}
-          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-current/15 px-3 text-sm font-semibold"
+          className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-current/15 px-3 text-sm font-black"
         >
           List
         </Link>
@@ -58,7 +58,7 @@ function ChapterLink({
 }) {
   if (!target) {
     return (
-      <span className="inline-flex min-h-12 items-center justify-center rounded-xl border border-current/10 px-4 text-sm opacity-45">
+      <span className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-current/10 px-4 text-sm opacity-45">
         No {label.toLowerCase()} chapter
       </span>
     );
@@ -67,12 +67,12 @@ function ChapterLink({
   return (
     <Link
       href={`/series/${seriesSlug}/${target.bookSlug}/chapter/${target.chapter.slug}`}
-      className={`inline-flex min-h-12 flex-col justify-center rounded-xl border border-current/20 px-4 transition hover:bg-current/5 ${
+      className={`inline-flex min-h-12 flex-col justify-center rounded-2xl border border-current/20 px-4 transition hover:bg-current/5 ${
         alignRight ? "items-end text-right" : ""
       }`}
     >
       <span className="text-xs uppercase tracking-[0.18em] opacity-60">{label}</span>
-      <span className="line-clamp-1 font-semibold">{target.chapter.title}</span>
+      <span className="line-clamp-1 font-black">{target.chapter.title}</span>
     </Link>
   );
 }
@@ -88,7 +88,7 @@ function MobileChapterLink({
 }) {
   if (!target) {
     return (
-      <span className="inline-flex min-h-11 items-center justify-center rounded-xl border border-current/10 px-3 text-sm opacity-45">
+      <span className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-current/10 px-3 text-sm opacity-45">
         {label}
       </span>
     );
@@ -97,7 +97,7 @@ function MobileChapterLink({
   return (
     <Link
       href={`/series/${seriesSlug}/${target.bookSlug}/chapter/${target.chapter.slug}`}
-      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-current/15 px-3 text-sm font-semibold"
+      className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-current/15 px-3 text-sm font-black"
     >
       {label}
     </Link>
