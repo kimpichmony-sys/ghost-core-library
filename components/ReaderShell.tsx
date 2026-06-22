@@ -1,11 +1,10 @@
-"use client";
-
 import type { ReactNode } from "react";
+import { ReaderLayout } from "@/components/ReaderLayout";
 
 type ReaderShellProps = {
   children: ReactNode;
 };
 
 export function ReaderShell({ children }: ReaderShellProps) {
-  return <div className="reader-shell min-h-screen pb-20">{children}</div>;
+  return <ReaderLayout>{children}</ReaderLayout>;
 }
