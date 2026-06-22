@@ -58,43 +58,45 @@ export default async function BookPage({ params }: BookPageProps) {
   return (
     <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[20rem_1fr] lg:px-8">
       <aside className="lg:sticky lg:top-24 lg:self-start">
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/25">
-          <div className="relative aspect-[2/3] bg-[#111c28]">
+        <div className="overflow-hidden rounded-3xl border border-orange-100 bg-orange-50 shadow-xl shadow-orange-950/10">
+          <div className="relative aspect-[2/3]">
             <NovelCover src={book.cover} alt={`${book.title} cover`} priority />
           </div>
         </div>
       </aside>
 
       <section className="flex flex-col gap-8">
-        <div className="rounded-2xl border border-white/10 bg-[#0d1621]/80 p-5 sm:p-7">
+        <div className="rounded-[2rem] border border-orange-100 bg-white p-5 shadow-xl shadow-orange-950/8 sm:p-7">
           <Link
             href={`/series/${series.slug}`}
-            className="mb-5 inline-flex text-sm font-semibold text-[#bcd3ff] transition hover:text-white"
+            className="mb-5 inline-flex text-sm font-black text-[#df3f21] transition hover:text-[#f06a2a]"
           >
             Back to series
           </Link>
           <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
-            <span className="rounded-full border border-[#e7c873]/30 bg-[#e7c873]/10 px-3 py-1 font-medium text-[#f5d884]">
+            <span className="rounded-full bg-[#f06a2a] px-3 py-1 font-black text-white">
               {book.status}
             </span>
-            <span className="text-slate-400">Book {book.bookNumber}</span>
-            <span className="text-slate-400">{book.chapters.length} chapters</span>
+            <span className="font-semibold text-stone-500">Book {book.bookNumber}</span>
+            <span className="font-semibold text-stone-500">{book.chapters.length} chapters</span>
           </div>
-          <h1 className="text-3xl font-bold text-white sm:text-5xl">{book.title}</h1>
-          <p className="mt-3 text-lg text-slate-300">{series.title}</p>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-slate-300">
+          <h1 className="text-3xl font-black tracking-tight text-stone-950 sm:text-5xl">
+            {book.title}
+          </h1>
+          <p className="mt-3 text-lg font-medium text-stone-600">{series.title}</p>
+          <p className="mt-6 max-w-3xl text-base leading-8 text-stone-700">
             {book.description}
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             {firstChapter ? (
               <Link
                 href={`/series/${series.slug}/${book.bookSlug}/chapter/${firstChapter.slug}`}
-                className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#e7c873] px-5 font-semibold text-[#10151d] transition hover:bg-[#f4dc91]"
+                className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#f06a2a] px-5 font-black text-white shadow-lg shadow-orange-700/20 transition hover:bg-[#df3f21]"
               >
                 Start Reading
               </Link>
             ) : (
-              <span className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/10 px-5 text-slate-400">
+              <span className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-orange-100 px-5 text-stone-500">
                 No chapters yet
               </span>
             )}
@@ -108,8 +110,8 @@ export default async function BookPage({ params }: BookPageProps) {
                   href={`/series/${series.slug}/${seriesBook.bookSlug}`}
                   className={`rounded-full border px-3 py-1 text-sm font-medium transition ${
                     seriesBook.bookSlug === book.bookSlug
-                      ? "border-[#e7c873]/40 bg-[#e7c873]/10 text-[#f2d889]"
-                      : "border-white/10 text-slate-300 hover:bg-white/10"
+                      ? "border-[#f06a2a] bg-orange-50 text-[#df3f21]"
+                      : "border-orange-100 text-stone-600 hover:bg-orange-50"
                   }`}
                 >
                   Book {seriesBook.bookNumber}
