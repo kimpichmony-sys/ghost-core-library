@@ -87,6 +87,8 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           <ReaderSettingsPanel />
         </div>
 
+        <ReadAloudControls text={chapter.content} />
+
         <article className="mx-auto w-full rounded-2xl border border-current/10 px-5 py-8 shadow-xl shadow-black/10 sm:px-10 sm:py-12">
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] opacity-65">
             {series.title}
@@ -102,8 +104,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             <MarkdownContent content={chapter.content} />
           </div>
         </article>
-
-        <ReadAloudControls text={chapter.content} />
 
         <ReaderNavigation
           seriesSlug={series.slug}
