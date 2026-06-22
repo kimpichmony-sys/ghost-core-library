@@ -1,30 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  READER_THEMES,
+  ReaderThemeSelector,
+  type ReaderThemeKey,
+} from "@/components/ReaderThemeSelector";
 
 type ReaderSettings = {
-  theme: (typeof themeOptions)[number];
+  theme: ReaderThemeKey;
   fontSize: (typeof fontSizeOptions)[number];
   fontFamily: (typeof fontFamilyOptions)[number];
   lineHeight: (typeof lineHeightOptions)[number];
   width: (typeof widthOptions)[number];
 };
 
-const themeOptions = ["white", "sepia", "dark", "dark-blue"] as const;
 const fontSizeOptions = ["16px", "18px", "20px", "22px", "24px", "28px", "32px"] as const;
-const fontFamilyOptions = ["serif", "sans-serif", "monospace"] as const;
-const lineHeightOptions = ["1.4", "1.6", "1.8", "2.0"] as const;
+const fontFamilyOptions = ["serif", "sans-serif", "system"] as const;
+const lineHeightOptions = ["1.5", "1.7", "1.9", "2.1"] as const;
 const widthOptions = ["narrow", "normal", "wide"] as const;
 
+const storageKey = "ghost-core-reader-settings";
+
 const defaultSettings: ReaderSettings = {
-  theme: "dark-blue",
+  theme: "paper",
   fontSize: "20px",
   fontFamily: "serif",
-  lineHeight: "1.8",
+  lineHeight: "1.7",
   width: "normal",
 };
-
-const storageKey = "moonlit-library-reader-settings";
 
 function pickAllowedValue<T extends string>(
   value: unknown,
@@ -42,6 +46,7 @@ function normalizeSettings(value: unknown): ReaderSettings {
   }
 
   const savedSettings = value as Partial<Record<keyof ReaderSettings, unknown>>;
+  const themeOptions = Object.keys(READER_THEMES) as ReaderThemeKey[];
 
   return {
     theme: pickAllowedValue(savedSettings.theme, themeOptions, defaultSettings.theme),
@@ -64,22 +69,40 @@ function normalizeSettings(value: unknown): ReaderSettings {
   };
 }
 
+function fontFamilyValue(fontFamily: ReaderSettings["fontFamily"]) {
+  if (fontFamily === "serif") {
+    return 'Georgia, "Times New Roman", serif';
+  }
+
+  if (fontFamily === "sans-serif") {
+    return "Arial, Helvetica, sans-serif";
+  }
+
+  return '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+}
+
+function widthValue(width: ReaderSettings["width"]) {
+  if (width === "narrow") {
+    return "42rem";
+  }
+
+  if (width === "wide") {
+    return "68rem";
+  }
+
+  return "52rem";
+}
+
 function applySettings(settings: ReaderSettings) {
-  document.documentElement.dataset.readerTheme = settings.theme;
-  document.documentElement.style.setProperty("--reader-font-size", settings.fontSize);
-  document.documentElement.style.setProperty("--reader-line-height", settings.lineHeight);
-  document.documentElement.style.setProperty(
-    "--reader-font-family",
-    settings.fontFamily === "serif"
-      ? "Georgia, serif"
-      : settings.fontFamily === "monospace"
-        ? "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
-        : "Arial, Helvetica, sans-serif",
-  );
-  document.documentElement.style.setProperty(
-    "--reader-width",
-    settings.width === "narrow" ? "42rem" : settings.width === "wide" ? "64rem" : "52rem",
-  );
+  const theme = READER_THEMES[settings.theme];
+  const root = document.documentElement;
+
+  root.style.setProperty("--reader-background", theme.background);
+  root.style.setProperty("--reader-text", theme.text);
+  root.style.setProperty("--reader-font-size", settings.fontSize);
+  root.style.setProperty("--reader-line-height", settings.lineHeight);
+  root.style.setProperty("--reader-font-family", fontFamilyValue(settings.fontFamily));
+  root.style.setProperty("--reader-width", widthValue(settings.width));
 }
 
 export function ReaderSettingsPanel() {
@@ -107,7 +130,7 @@ export function ReaderSettingsPanel() {
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(nextSettings));
     } catch {
-      // Reader settings are nice to have, but never required for reading.
+      // Reader preferences should never block reading.
     }
   }
 
@@ -116,22 +139,15 @@ export function ReaderSettingsPanel() {
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        className="rounded-full border border-current px-4 py-2 font-semibold opacity-85 transition hover:opacity-100"
+        className="inline-flex min-h-11 items-center justify-center rounded-full border border-stone-200 bg-white px-4 text-sm font-black text-stone-900 shadow-sm shadow-stone-950/5 transition hover:border-orange-200 hover:bg-orange-50"
       >
         Reader Settings
       </button>
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-40 w-[min(22rem,calc(100vw-2rem))] rounded-2xl border border-current/15 bg-[#0c141d] p-4 text-slate-100 shadow-2xl shadow-black/40">
-          <div className="grid gap-4">
-            <SettingSelect
-              label="Background"
+        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-40 w-[min(26rem,calc(100vw-2rem))] rounded-3xl border border-orange-100 bg-white p-4 text-stone-900 shadow-2xl shadow-orange-950/18">
+          <div className="grid gap-5">
+            <ReaderThemeSelector
               value={settings.theme}
-              options={[
-                ["white", "White"],
-                ["sepia", "Sepia"],
-                ["dark", "Dark"],
-                ["dark-blue", "Dark blue"],
-              ]}
               onChange={(theme) => updateSettings({ ...settings, theme })}
             />
             <SettingSelect
@@ -146,7 +162,7 @@ export function ReaderSettingsPanel() {
               options={[
                 ["serif", "Serif"],
                 ["sans-serif", "Sans-serif"],
-                ["monospace", "Monospace"],
+                ["system", "System"],
               ]}
               onChange={(fontFamily) => updateSettings({ ...settings, fontFamily })}
             />
@@ -188,11 +204,11 @@ function SettingSelect<T extends string>({
 }: SettingSelectProps<T>) {
   return (
     <label className="grid gap-2 text-sm">
-      <span className="font-semibold text-slate-300">{label}</span>
+      <span className="font-black text-stone-800">{label}</span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value as T)}
-        className="min-h-11 rounded-xl border border-white/10 bg-[#111c28] px-3 text-white outline-none focus:border-[#8eb7ff]/70"
+        className="min-h-11 rounded-2xl border border-stone-200 bg-white px-3 font-semibold text-stone-900 outline-none transition focus:border-[#f06a2a] focus:ring-4 focus:ring-orange-100"
       >
         {options.map(([optionValue, optionLabel]) => (
           <option key={optionValue} value={optionValue}>
