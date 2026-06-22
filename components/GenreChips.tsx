@@ -4,7 +4,7 @@ type GenreChipsProps = {
 
 export function GenreChips({ genres }: GenreChipsProps) {
   if (genres.length === 0) {
-    return <p className="text-sm text-slate-400">No genres yet.</p>;
+    return <p className="text-sm text-stone-500">No genres yet.</p>;
   }
 
   return (
@@ -12,7 +12,7 @@ export function GenreChips({ genres }: GenreChipsProps) {
       {genres.map((genre) => (
         <span
           key={genre}
-          className="rounded-full border border-[#8eb7ff]/25 bg-[#8eb7ff]/10 px-3 py-1 text-sm font-medium text-[#bcd3ff]"
+          className="rounded-full border border-orange-100 bg-orange-50 px-3 py-1 text-sm font-bold text-[#b54a22]"
         >
           {genre}
         </span>
