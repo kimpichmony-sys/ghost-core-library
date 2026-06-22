@@ -15,6 +15,7 @@ type ReadAloudSettings = {
 };
 
 const storageKey = "ghost-core-read-aloud-settings";
+const panelStateStorageKey = "ghost-core-read-aloud-panel-expanded";
 const speedOptions = [0.75, 1, 1.25, 1.5, 2] as const;
 const defaultSettings: ReadAloudSettings = {
   voiceURI: "",
@@ -119,11 +120,14 @@ export function ReadAloudControls({ text }: ReadAloudControlsProps) {
 
     try {
       const storedSettings = window.localStorage.getItem(storageKey);
+      const storedPanelState = window.localStorage.getItem(panelStateStorageKey);
+
       setSettings(
         storedSettings
           ? normalizeSettings(JSON.parse(storedSettings) as unknown)
           : defaultSettings,
       );
+      setIsExpanded(storedPanelState === "true");
     } catch {
       setSettings(defaultSettings);
     }
@@ -145,6 +149,14 @@ export function ReadAloudControls({ text }: ReadAloudControlsProps) {
       // Read aloud settings are optional. The reader should never crash here.
     }
   }, [settings]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(panelStateStorageKey, String(isExpanded));
+    } catch {
+      // Panel state is optional and should never block reading.
+    }
+  }, [isExpanded]);
 
   function getSelectedVoice() {
     return voices.find((voice) => voice.voiceURI === settings.voiceURI) ?? null;
@@ -198,7 +210,6 @@ export function ReadAloudControls({ text }: ReadAloudControlsProps) {
     window.speechSynthesis.cancel();
     chunkIndexRef.current = 0;
     shouldContinueRef.current = true;
-    setIsExpanded(true);
     setStatus("Reading");
     speakChunk(0);
   }
@@ -233,6 +244,13 @@ export function ReadAloudControls({ text }: ReadAloudControlsProps) {
     setStatus("Not started");
   }
 
+  const collapsedLabel =
+    status === "Reading"
+      ? "🎧 Reading..."
+      : status === "Paused"
+        ? "🎧 Paused"
+        : "🎧 Read Aloud";
+
   function updateSettings(nextSettings: ReadAloudSettings) {
     setSettings(nextSettings);
 
@@ -245,15 +263,46 @@ export function ReadAloudControls({ text }: ReadAloudControlsProps) {
 
   if (!isSupported) {
     return (
-      <section className="mx-auto w-full max-w-[var(--reader-width)] rounded-3xl border border-current/10 bg-current/5 p-5 text-sm opacity-80">
+      <section className="mx-auto w-full max-w-[var(--reader-width)]">
+        <div className="inline-flex rounded-full border border-current/10 bg-current/5 px-4 py-2 text-sm opacity-80">
         Read aloud is not supported in this browser.
+        </div>
+      </section>
+    );
+  }
+
+  if (!isExpanded) {
+    return (
+      <section className="mx-auto w-full max-w-[var(--reader-width)]">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsExpanded(true)}
+            className="inline-flex min-h-10 items-center justify-center rounded-full border border-current/15 bg-current/5 px-4 text-sm font-black shadow-sm shadow-black/5 transition hover:bg-current/10"
+            aria-expanded={false}
+          >
+            {collapsedLabel}
+          </button>
+
+          {status === "Reading" || status === "Paused" ? (
+            <div className="inline-flex min-h-10 items-center gap-2 rounded-full border border-current/10 bg-current/5 px-2 text-sm shadow-sm shadow-black/5">
+              <span className="px-2 font-semibold opacity-75">{status}</span>
+              {status === "Reading" ? (
+                <MiniControlButton onClick={pauseReading}>Pause</MiniControlButton>
+              ) : (
+                <MiniControlButton onClick={resumeReading}>Resume</MiniControlButton>
+              )}
+              <MiniControlButton onClick={stopReading}>Stop</MiniControlButton>
+            </div>
+          ) : null}
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="mx-auto w-full max-w-[var(--reader-width)] rounded-3xl border border-current/10 bg-current/5 p-4 shadow-sm shadow-black/5 sm:p-5">
-      <div className="flex flex-col gap-4">
+    <section className="mx-auto w-full max-w-[var(--reader-width)] rounded-3xl border border-current/10 bg-current/5 p-3 shadow-sm shadow-black/5 sm:p-4">
+      <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-bold">Read Aloud</h2>
@@ -265,80 +314,94 @@ export function ReadAloudControls({ text }: ReadAloudControlsProps) {
             className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-current/15 px-4 text-sm font-black transition hover:bg-current/10"
             aria-expanded={isExpanded}
           >
-            {isExpanded ? "Minimize" : "Open Controls"}
+            Minimize
           </button>
         </div>
 
-        {isExpanded ? (
-          <>
-          <div className="grid grid-cols-2 gap-2 sm:flex">
-            <ControlButton onClick={startReading}>Play</ControlButton>
-            <ControlButton onClick={pauseReading}>Pause</ControlButton>
-            <ControlButton onClick={resumeReading}>Resume</ControlButton>
-            <ControlButton onClick={stopReading}>Stop</ControlButton>
-          </div>
+        <div className="grid grid-cols-2 gap-2 sm:flex">
+          <ControlButton onClick={startReading}>Play</ControlButton>
+          <ControlButton onClick={pauseReading}>Pause</ControlButton>
+          <ControlButton onClick={resumeReading}>Resume</ControlButton>
+          <ControlButton onClick={stopReading}>Stop</ControlButton>
+        </div>
 
-          <div className="grid gap-3 md:grid-cols-3">
-            <label className="grid gap-2 text-sm">
-              <span className="font-semibold opacity-80">Speed</span>
-              <select
-                value={settings.rate}
-                onChange={(event) =>
-                  updateSettings({ ...settings, rate: Number(event.target.value) })
-                }
-                className="min-h-11 rounded-2xl border border-current/15 bg-transparent px-3 outline-none"
-              >
-                {speedOptions.map((speed) => (
-                  <option key={speed} value={speed}>
-                    {speed}x
-                  </option>
-                ))}
-              </select>
-            </label>
+        <div className="grid gap-3 md:grid-cols-3">
+          <label className="grid gap-2 text-sm">
+            <span className="font-semibold opacity-80">Speed</span>
+            <select
+              value={settings.rate}
+              onChange={(event) =>
+                updateSettings({ ...settings, rate: Number(event.target.value) })
+              }
+              className="min-h-11 rounded-2xl border border-current/15 bg-transparent px-3 outline-none"
+            >
+              {speedOptions.map((speed) => (
+                <option key={speed} value={speed}>
+                  {speed}x
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <label className="grid gap-2 text-sm">
-              <span className="font-semibold opacity-80">Voice</span>
-              <select
-                value={settings.voiceURI}
-                onChange={(event) =>
-                  updateSettings({ ...settings, voiceURI: event.target.value })
-                }
-                className="min-h-11 rounded-2xl border border-current/15 bg-transparent px-3 outline-none"
-              >
-                <option value="">Default voice</option>
-                {voices.map((voice) => (
-                  <option key={voice.voiceURI} value={voice.voiceURI}>
-                    {voice.name} {voice.lang ? `(${voice.lang})` : ""}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <label className="grid gap-2 text-sm">
+            <span className="font-semibold opacity-80">Voice</span>
+            <select
+              value={settings.voiceURI}
+              onChange={(event) =>
+                updateSettings({ ...settings, voiceURI: event.target.value })
+              }
+              className="min-h-11 rounded-2xl border border-current/15 bg-transparent px-3 outline-none"
+            >
+              <option value="">Default voice</option>
+              {voices.map((voice) => (
+                <option key={voice.voiceURI} value={voice.voiceURI}>
+                  {voice.name} {voice.lang ? `(${voice.lang})` : ""}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <label className="grid gap-2 text-sm">
-              <span className="font-semibold opacity-80">
-                Volume {Math.round(settings.volume * 100)}%
-              </span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={settings.volume}
-                onChange={(event) =>
-                  updateSettings({ ...settings, volume: Number(event.target.value) })
-                }
-                className="h-11 w-full accent-[#f06a2a]"
-              />
-            </label>
-          </div>
+          <label className="grid gap-2 text-sm">
+            <span className="font-semibold opacity-80">
+              Volume {Math.round(settings.volume * 100)}%
+            </span>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={settings.volume}
+              onChange={(event) =>
+                updateSettings({ ...settings, volume: Number(event.target.value) })
+              }
+              className="h-11 w-full accent-[#f06a2a]"
+            />
+          </label>
+        </div>
 
-          {voices.length === 0 ? (
-            <p className="text-sm opacity-65">Loading browser voices...</p>
-          ) : null}
-          </>
+        {voices.length === 0 ? (
+          <p className="text-sm opacity-65">Loading browser voices...</p>
         ) : null}
       </div>
     </section>
+  );
+}
+
+function MiniControlButton({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="min-h-8 rounded-full px-3 text-xs font-black transition hover:bg-current/10"
+    >
+      {children}
+    </button>
   );
 }
 
