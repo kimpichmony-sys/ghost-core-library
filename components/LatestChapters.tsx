@@ -7,30 +7,30 @@ type LatestChaptersProps = {
 
 export function LatestChapters({ chapters }: LatestChaptersProps) {
   return (
-    <section id="latest" className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+    <section id="latest" className="rounded-3xl border border-orange-100 bg-white p-5 shadow-sm shadow-orange-950/5">
       <div className="mb-4 flex items-center justify-between gap-4">
-        <h2 className="text-xl font-semibold text-white">Latest Chapters</h2>
+        <h2 className="text-xl font-black tracking-tight text-stone-950">Latest Chapters</h2>
       </div>
       {chapters.length > 0 ? (
-        <div className="divide-y divide-white/10">
+        <div className="divide-y divide-stone-100">
           {chapters.map((chapter) => (
             <Link
               key={`${chapter.seriesSlug}-${chapter.bookSlug}-${chapter.chapterSlug}`}
               href={`/series/${chapter.seriesSlug}/${chapter.bookSlug}/chapter/${chapter.chapterSlug}`}
-              className="grid gap-1 py-4 transition hover:translate-x-1"
+              className="grid gap-1 rounded-2xl py-4 transition hover:bg-orange-50/70 sm:px-3"
             >
-              <span className="text-sm text-slate-400">
+              <span className="text-sm font-medium text-stone-500">
                 {chapter.seriesTitle} · Book {chapter.bookNumber}
               </span>
-              <span className="font-semibold text-white">{chapter.chapterTitle}</span>
-              <span className="text-sm text-[#e7c873]">
+              <span className="font-bold text-stone-950">{chapter.chapterTitle}</span>
+              <span className="text-sm font-semibold text-[#df3f21]">
                 Chapter {chapter.chapterNumber} · {chapter.date}
               </span>
             </Link>
           ))}
         </div>
       ) : (
-        <p className="rounded-xl border border-dashed border-white/15 p-6 text-center text-slate-300">
+        <p className="rounded-2xl border border-dashed border-orange-200 p-6 text-center text-stone-500">
           No chapters published yet.
         </p>
       )}
