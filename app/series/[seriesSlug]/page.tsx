@@ -54,10 +54,10 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
-      <section className="grid gap-8 rounded-2xl border border-white/10 bg-[#0d1621]/80 p-5 sm:p-7 lg:grid-cols-[20rem_1fr]">
+      <section className="grid gap-8 rounded-[2rem] border border-orange-100 bg-white p-5 shadow-xl shadow-orange-950/8 sm:p-7 lg:grid-cols-[20rem_1fr]">
         <aside>
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/25">
-            <div className="relative aspect-[2/3] bg-[#111c28]">
+          <div className="overflow-hidden rounded-3xl border border-orange-100 bg-orange-50 shadow-xl shadow-orange-950/10">
+            <div className="relative aspect-[2/3]">
               <NovelCover
                 src={series.cover}
                 alt={`${series.title} cover`}
@@ -68,27 +68,29 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
         </aside>
         <div className="flex flex-col justify-center">
           <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
-            <span className="rounded-full border border-[#e7c873]/30 bg-[#e7c873]/10 px-3 py-1 font-medium text-[#f5d884]">
+            <span className="rounded-full bg-[#f06a2a] px-3 py-1 font-black text-white">
               {series.status}
             </span>
-            <span className="text-slate-400">
+            <span className="font-semibold text-stone-500">
               {series.books.length} book{series.books.length === 1 ? "" : "s"}
             </span>
-            <span className="text-slate-400">{chapterCount} chapters</span>
+            <span className="font-semibold text-stone-500">{chapterCount} chapters</span>
           </div>
-          <h1 className="text-3xl font-bold text-white sm:text-5xl">{series.title}</h1>
-          <p className="mt-3 text-lg text-slate-300">by {series.author}</p>
+          <h1 className="text-3xl font-black tracking-tight text-stone-950 sm:text-5xl">
+            {series.title}
+          </h1>
+          <p className="mt-3 text-lg font-medium text-stone-600">by {series.author}</p>
           <div className="mt-5">
             <GenreChips genres={series.genres} />
           </div>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-slate-300">
+          <p className="mt-6 max-w-3xl text-base leading-8 text-stone-700">
             {series.description}
           </p>
           {latestChapter ? (
-            <p className="mt-5 text-sm text-slate-300">
+            <p className="mt-5 text-sm font-medium text-stone-600">
               Latest:{" "}
               <Link
-                className="font-semibold text-[#f2d889] transition hover:text-white"
+                className="font-black text-[#df3f21] transition hover:text-[#f06a2a]"
                 href={`/series/${series.slug}/${latestChapter.bookSlug}/chapter/${latestChapter.chapterSlug}`}
               >
                 Book {latestChapter.bookNumber}, {latestChapter.chapterTitle}
@@ -99,12 +101,12 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
             {firstBook && firstChapter ? (
               <Link
                 href={`/series/${series.slug}/${firstBook.bookSlug}/chapter/${firstChapter.slug}`}
-                className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#e7c873] px-5 font-semibold text-[#10151d] transition hover:bg-[#f4dc91]"
+                className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#f06a2a] px-5 font-black text-white shadow-lg shadow-orange-700/20 transition hover:bg-[#df3f21]"
               >
                 Start Reading
               </Link>
             ) : (
-              <span className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/10 px-5 text-slate-400">
+              <span className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-orange-100 px-5 text-stone-500">
                 No chapters yet
               </span>
             )}
@@ -113,35 +115,35 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-white/10 bg-white/[0.04]">
-        <div className="border-b border-white/10 p-5">
-          <h2 className="text-2xl font-bold text-white">Books</h2>
+      <section className="overflow-hidden rounded-3xl border border-orange-100 bg-white shadow-sm shadow-orange-950/5">
+        <div className="border-b border-stone-100 p-5">
+          <h2 className="text-2xl font-black tracking-tight text-stone-950">Books</h2>
         </div>
         {series.books.length > 0 ? (
-          <div className="divide-y divide-white/10">
+          <div className="divide-y divide-stone-100">
             {series.books.map((book) => (
               <Link
                 key={book.bookSlug}
                 href={`/series/${series.slug}/${book.bookSlug}`}
-                className="grid gap-3 p-5 transition hover:bg-white/[0.04] sm:grid-cols-[1fr_auto]"
+                className="grid gap-3 p-5 transition hover:bg-orange-50 sm:grid-cols-[1fr_auto] sm:items-center"
               >
                 <div>
-                  <p className="text-sm font-medium text-[#e7c873]">
+                  <p className="text-sm font-black text-[#df3f21]">
                     Book {book.bookNumber} · {book.status}
                   </p>
-                  <h3 className="mt-1 text-lg font-semibold text-white">{book.title}</h3>
-                  <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-6 text-slate-300">
+                  <h3 className="mt-1 text-lg font-black text-stone-950">{book.title}</h3>
+                  <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-6 text-stone-600">
                     {book.description}
                   </p>
                 </div>
-                <span className="text-sm text-slate-400">
+                <span className="text-sm font-semibold text-stone-500">
                   {book.chapters.length} chapters
                 </span>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="p-8 text-center text-slate-300">
+          <div className="p-8 text-center text-stone-500">
             No books yet. Add book folders under this series.
           </div>
         )}
