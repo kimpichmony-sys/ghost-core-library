@@ -1,12 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #071018;
-  --foreground: #edf4fb;
+  --background: #fff8f1;
+  --foreground: #221814;
+  --accent: #f06a2a;
+  --accent-strong: #df3f21;
   --reader-font-size: 20px;
-  --reader-line-height: 1.8;
+  --reader-line-height: 1.7;
   --reader-font-family: Georgia, serif;
   --reader-width: 52rem;
+  --reader-background: #f4e6b8;
+  --reader-text: #1f1a12;
 }
 
 * {
@@ -20,8 +24,8 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(104, 154, 255, 0.12), transparent 32rem),
-    linear-gradient(180deg, #071018 0%, #0c1118 48%, #080b10 100%);
+    linear-gradient(180deg, rgba(255, 239, 226, 0.82) 0%, rgba(255, 255, 255, 0) 24rem),
+    var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -42,7 +46,7 @@ select {
 }
 
 .chapter-content p {
-  margin-bottom: 1.25em;
+  margin-bottom: 1.2em;
 }
 
 .chapter-content h1,
@@ -91,49 +95,17 @@ select {
 }
 
 .reader-shell {
-  background: #07111d;
-  color: #e9f2ff;
+  background: var(--reader-background);
+  color: var(--reader-text);
 }
 
-.reader-shell article {
+.reader-content-card {
   max-width: var(--reader-width);
   font-family: var(--reader-font-family);
   font-size: var(--reader-font-size);
   line-height: var(--reader-line-height);
 }
 
-html[data-reader-theme="white"] .reader-shell {
-  background: #f8fafc;
-  color: #172033;
-}
-
-html[data-reader-theme="sepia"] .reader-shell {
-  background: #f4ecd8;
-  color: #2f261b;
-}
-
-html[data-reader-theme="dark"] .reader-shell {
-  background: #0d0f12;
-  color: #e7e7e7;
-}
-
-html[data-reader-theme="dark-blue"] .reader-shell {
-  background: #07111d;
-  color: #e9f2ff;
-}
-
 .reader-mobile-nav {
-  background: rgba(7, 17, 29, 0.94);
-}
-
-html[data-reader-theme="white"] .reader-mobile-nav {
-  background: rgba(248, 250, 252, 0.94);
-}
-
-html[data-reader-theme="sepia"] .reader-mobile-nav {
-  background: rgba(244, 236, 216, 0.94);
-}
-
-html[data-reader-theme="dark"] .reader-mobile-nav {
-  background: rgba(13, 15, 18, 0.94);
+  background: color-mix(in srgb, var(--reader-background) 94%, transparent);
 }
