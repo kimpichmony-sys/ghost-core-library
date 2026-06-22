@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MarkdownContent } from "@/components/MarkdownContent";
+import { ReadAloudControls } from "@/components/ReadAloudControls";
 import { ReaderNavigation } from "@/components/ReaderNavigation";
 import { ReaderProgressSaver } from "@/components/ReaderProgressSaver";
 import { ReaderSettingsPanel } from "@/components/ReaderSettingsPanel";
@@ -101,6 +102,8 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             <MarkdownContent content={chapter.content} />
           </div>
         </article>
+
+        <ReadAloudControls text={chapter.content} />
 
         <ReaderNavigation
           seriesSlug={series.slug}

@@ -170,6 +170,8 @@ Then update the matching paths in the book's `meta.json`.
 
 Reader settings and Continue Reading progress are stored in the reader's browser with localStorage.
 
+The reader page also includes a free browser-based Read Aloud panel using the Web Speech API. It does not need an API key, paid voice service, database, or generated audio files. Voice, speed, and volume preferences are saved in localStorage on the reader's device.
+
 Progress is saved by series:
 
 ```json
