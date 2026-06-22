@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MarkdownContent } from "@/components/MarkdownContent";
+import { ChapterContent } from "@/components/ChapterContent";
 import { ReadAloudControls } from "@/components/ReadAloudControls";
 import { ReaderNavigation } from "@/components/ReaderNavigation";
 import { ReaderProgressSaver } from "@/components/ReaderProgressSaver";
 import { ReaderSettingsPanel } from "@/components/ReaderSettingsPanel";
-import { ReaderShell } from "@/components/ReaderShell";
+import { ReaderLayout } from "@/components/ReaderLayout";
 import {
   getAllSeries,
   getBookBySlug,
@@ -68,7 +68,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   );
 
   return (
-    <ReaderShell>
+    <ReaderLayout>
       <ReaderProgressSaver
         seriesSlug={series.slug}
         bookSlug={book.bookSlug}
@@ -76,33 +76,38 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         chapterNumber={chapter.chapter}
         chapterTitle={chapter.title}
       />
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="sticky top-16 z-30 -mx-4 flex flex-wrap items-center justify-between gap-3 border-b border-current/10 bg-[var(--reader-background)] px-4 py-3 text-sm sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <Link
             href={`/series/${series.slug}/${book.bookSlug}`}
-            className="rounded-full border border-current px-4 py-2 opacity-80 transition hover:opacity-100"
+            className="rounded-full border border-current/20 px-4 py-2 font-black opacity-85 transition hover:bg-current/5 hover:opacity-100"
           >
             Back to book
           </Link>
+          <div className="min-w-0 flex-1 text-center max-sm:order-3 max-sm:basis-full">
+            <p className="truncate text-sm font-black">{chapter.title}</p>
+          </div>
           <ReaderSettingsPanel />
         </div>
 
         <ReadAloudControls text={chapter.content} />
 
-        <article className="mx-auto w-full rounded-2xl border border-current/10 px-5 py-8 shadow-xl shadow-black/10 sm:px-10 sm:py-12">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] opacity-65">
+        <article className="mx-auto w-full">
+          <div className="reader-content-card mx-auto w-full px-1 pt-6 text-center sm:px-4">
+            <p className="mb-2 text-sm font-black uppercase tracking-[0.22em] opacity-65">
             {series.title}
-          </p>
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.22em] opacity-50">
-            Book {book.bookNumber}
-          </p>
-          <h1 className="text-3xl font-bold leading-tight sm:text-4xl">{chapter.title}</h1>
-          <p className="mt-3 text-sm opacity-60">
-            Chapter {chapter.chapter} · {chapter.date}
-          </p>
-          <div className="mt-10">
-            <MarkdownContent content={chapter.content} />
+            </p>
+            <p className="mb-3 text-sm font-black uppercase tracking-[0.22em] opacity-50">
+              Book {book.bookNumber}
+            </p>
+            <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-5xl">
+              {chapter.title}
+            </h1>
+            <p className="mt-3 text-sm font-semibold opacity-60">
+              Chapter {chapter.chapter} · {chapter.date}
+            </p>
           </div>
+          <ChapterContent content={chapter.content} />
         </article>
 
         <ReaderNavigation
@@ -112,6 +117,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           next={next}
         />
       </div>
-    </ReaderShell>
+    </ReaderLayout>
   );
 }
